@@ -1,0 +1,73 @@
+kind: live
+name: Neu.ro MLflow server
+author: Neu.ro MLOps team
+descr: Integrate and run MLFlow server in your project.
+
+inputs:
+  backend_store_uri:
+    descr: |
+      URI to the storage, which should be used to dump experiments, their metrics, registered models, etc.
+      Examples: 
+        Postgress DB: postgresql://postgres:password@job-1231-123123-123.platform-jobs:5432
+        SQLite DB: sqlite:///some/path/mlflow.db - you cannot use storage: here, but could use disk:
+        regular file: /path/to/store - in this case "MLFlow registered models" will not work.
+      Docs: https://mlflow.org/docs/latest/tracking.html#backend-stores
+  default_artifact_root:
+    descr: |
+      Place, where to store MLFlow artifacts (such as model dumps).
+      Beware, this path should also be accessible from the training job
+      You might also use a platform storage as a backend.
+      In this case use a local path for artifact store:
+        1. set this input equal to the `mount path` of needed volume,
+        2. add its read-write reference to the `inputs.volumes` list
+      Docs: https://mlflow.org/docs/latest/tracking.html#artifact-stores
+  volumes:
+    default: "[]"
+    descr: Additional volumes for the server job
+  envs:
+    default: "{}"
+    descr: Additional environment variables for the server job
+  http_auth:
+    default: "False"
+    descr: |
+      Whether to enable Neu.ro platform-based authentication or not.
+      If disabled (by default) - your WebDAV will not be protected by Neu.ro SSO.
+      It has no impact on `rclone serve webdav` parameters though.
+  life_span:
+    default: "10d"
+    descr: |
+      How log should the MLFlow server job run
+  port:
+    default: "5000"
+    descr: |
+      MLFlow server port.
+      Useful if you want to access the server within the cluster, for instance, from another job.
+  job_name:
+    default: ""
+    descr: |
+      The name of MLFlow server.
+      Use it to generate a predictable job hostname.
+  preset:
+    default: ""
+    descr: |
+      The amount of resources to use, while running the server.
+  extra_params:
+    default: ""
+    descr: |
+      Extra parameters for `mlflow server` command invocation.
+
+job:
+  image: neuromation/mlflow:1.11.0
+  name: ${{ inputs.job_name }}
+  preset: ${{ inputs.preset }}
+  http_port: ${{ inputs.port }}
+  http_auth: ${{ inputs.http_auth }}
+  life_span: ${{ inputs.life_span }}
+  detach: True
+  browse: True
+  volumes: "${{ from_json(inputs.volumes) }}"
+  env: "${{ from_json(inputs.envs) }}"
+  cmd: |
+    server --host 0.0.0.0 --port ${{ inputs.port }}
+        --backend-store-uri=${{ inputs.backend_store_uri }}
+        --default-artifact-root=${{ inputs.default_artifact_root }} ${{ inputs.extra_params }}

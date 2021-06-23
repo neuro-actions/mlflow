@@ -1,0 +1,30 @@
+kind: live
+id: mlflow_action
+title: mlflow-action
+
+volumes:
+  mlflow_artifacts:
+    remote: storage:${{ flow.flow_id }}/mlflow_artifacts
+    mount: /usr/local/share/mlflow
+  mlflow_storage:
+    remote: disk:mlflow-storage
+    mount: /usr/local/share/mlflow_storage
+
+jobs:
+  mlflow_server:
+    action: gh:neuro-actions/mlflow@v1.0.0
+    args:
+      backend_store_uri: sqlite:///${{ volumes.mlflow_storage.mount }}/mlflow.db
+      default_artifact_root: ${{ volumes.mlflow_artifacts.mount }}
+      volumes: "${{ to_json(
+        [
+          volumes.mlflow_artifacts.ref_rw,
+          volumes.mlflow_storage.ref_rw
+        ]
+      ) }}"
+      envs: "${{ to_json(
+        {
+          'ENV1': 'env_1_value',
+          'ENV2': 'env_2_value'
+        }
+      ) }}"
