@@ -1,7 +1,7 @@
 # Run your personal MLFlow server on top of Neu.ro platform with neuro-flow
 
 This is a [`neuro-flow`](https://github.com/neuro-inc/neuro-flow) action launching an instance of [MLFlow tracking server](https://www.mlflow.org/docs/latest/tracking.html).
-You might use it to track your ML experiments, model trainings as well as deploying those models to production using our [MLFlow2Seldon intrgration](https://github.com/neuro-inc/mlops-k8s-mlflow2seldon)
+You might use it to track your ML experiments and model trainings as well as deploying the models to production using our [MLFlow2Seldon integration](https://github.com/neuro-inc/mlops-k8s-mlflow2seldon)
 
 MLFlow action exposes several parametes, two of which are mandatory: `backend_store_uri` and `default_artifact_root`.
 
@@ -22,14 +22,15 @@ args:
 	backend_store_uri: postgresql://postgres:password@${{ inspect_job('postgres').internal_hostname_named }}:5432
 ```
 
-SQLite persistet on a platform disk.
-This also implies adding the respective disk with the mount part `/some/path` to the `volumes` argument.
+SQLite persistent on a platform disk.
+This also implies adding the respective disk with the mount path `/some/path` to the `volumes` argument.
 ```
 args:
     backend_store_uri: sqlite:///some/path/mlflow.db
 ```
 
-Regular file. In this case "MLFlow registered models" will not work.
+Regular file. In this case "MLFlow registered models" functionality will not work.
+In order to use model registry functionality, you must run your server using a database-backed store (see note [here](https://www.mlflow.org/docs/latest/tracking.html#backend-stores)).
 ```
 args:
     backend_store_uri: /path/to/store 
@@ -90,7 +91,8 @@ args:
 Whether to use HTTP authentication for Jupyter or not. `"False"` by default.
 
 #### Example
-Enable http_auth via setting it to True. In this case your training job should be able to communicate with hidden behind SSO MLFlow. 
+Enable http_auth via setting it to True.
+In this case your training job should be able to communicate with MLFlow guarded by the Neu.ro platform authentication solution.
 ```
 args:
     http_auth: "True"
@@ -99,7 +101,7 @@ args:
 
 ### `life_span`
 
-How log should the MLFlow server job run. `"10d"` by default.
+How long should the MLFlow server job run. `"10d"` by default.
 
 #### Example
 
@@ -145,7 +147,7 @@ args:
 ### `extra_params`
 
 Additional parameters transferred to the `mlflow server` command. `""` by default.
-Checkout the list of parameters via `mlflow server --help`.
+Check the list of parameters via `mlflow server --help`.
 
 #### Example
 

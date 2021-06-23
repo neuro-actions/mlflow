@@ -31,21 +31,19 @@ inputs:
     default: "False"
     descr: |
       Whether to enable Neu.ro platform-based authentication or not.
-      If disabled (by default) - your WebDAV will not be protected by Neu.ro SSO.
-      It has no impact on `rclone serve webdav` parameters though.
+      If disabled (by default) - your MLFlow server will not be protected by Neu.ro SSO.
   life_span:
     default: "10d"
     descr: |
-      How log should the MLFlow server job run
+      How long should the MLFlow server job run
   port:
     default: "5000"
     descr: |
-      MLFlow server port.
-      Useful if you want to access the server within the cluster, for instance, from another job.
+      Port, which the MLFlow server listens will listen to and the platform exposes.
   job_name:
     default: ""
     descr: |
-      The name of MLFlow server.
+      The name of MLFlow server job.
       Use it to generate a predictable job hostname.
   preset:
     default: ""
