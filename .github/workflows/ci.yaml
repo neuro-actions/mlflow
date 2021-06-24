@@ -1,14 +1,13 @@
 name: CI
 
 on:
-  push:
-    tags: [v*]
+  release:
+    types: [published]
 
 jobs:
   deploy:
     name: Build and push Docker image
     runs-on: ubuntu-latest
-    if: github.event_name == 'push' && contains(github.ref, 'refs/tags/')
     steps:
     - name: Checkout commit
       uses: actions/checkout@v2
