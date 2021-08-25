@@ -22,7 +22,7 @@ args:
 	backend_store_uri: postgresql://postgres:password@${{ inspect_job('postgres').internal_hostname_named }}:5432
 ```
 
-* SQLite persistent on a platform disk.
+* SQLite persistent on a platform disk or storage.
 This also implies adding the respective disk's mount path `/some/path` to the `volumes` argument.
 ```
 args:
