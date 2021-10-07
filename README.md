@@ -3,11 +3,30 @@
 This is a [`neuro-flow`](https://github.com/neuro-inc/neuro-flow) action launching an instance of [MLFlow tracking server](https://www.mlflow.org/docs/latest/tracking.html).
 You can use it to track your ML experiments and model training as well as to deploy models to production using our [MLFlow2Seldon integration](https://github.com/neuro-inc/mlops-k8s-mlflow2seldon)
 
-The MLFlow action exposes several arguments, two of which are mandatory: `backend_store_uri` and `default_artifact_root`.
+The MLFlow action exposes several arguments, one of which is mandatory: `default_artifact_root`.
 
 ## Usage example could be found in the [.neuro/live.yaml](.neuro/live.yaml) file.
 
 ## Arguments
+
+### `default_artifact_root`
+
+A place to store MLFlow artifacts such as model dumps.
+This path should also be accessible from the training job.
+You can find more information [here](https://mlflow.org/docs/latest/tracking.html#artifact-stores)
+
+#### Example
+
+You can use platform storage as a backend.
+To do this, use a local path for artifact store:
+1. Set this input's value to the mount path of the needed volume.
+2. Add its read-write reference to the `inputs.volumes` list.
+
+```
+args:
+	volumes_code_remote:${{ volumes.mlflow_artifacts.mount }}
+```
+
 
 ### `backend_store_uri`
 
@@ -15,6 +34,9 @@ URI of the storage which should be used to dump experiments, their metrics, regi
 You can find more information [here](https://mlflow.org/docs/latest/tracking.html#backend-stores).
 
 #### Examples
+
+* The argument is not set.
+In this case the `--backend_store_uri` MLFlow flag will be ommited and the default value will be used (see the _regular file_ case below).
 
 * Postgres server as a job within the same project:
 ```
@@ -35,24 +57,6 @@ In order to use this functionality, you must run your server using a database-ba
 ```
 args:
     backend_store_uri: /path/to/store 
-```
-
-### `default_artifact_root`
-
-A place to store MLFlow artifacts such as model dumps.
-This path should also be accessible from the training job.
-You can find more information [here](https://mlflow.org/docs/latest/tracking.html#artifact-stores)
-
-#### Example
-
-You can use platform storage as a backend.
-To do this, use a local path for artifact store:
-1. Set this input's value to the mount path of the needed volume.
-2. Add its read-write reference to the `inputs.volumes` list.
-
-```
-args:
-	volumes_code_remote:${{ volumes.mlflow_artifacts.mount }}
 ```
 
 ### `volumes`

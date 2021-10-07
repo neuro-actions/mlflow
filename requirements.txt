@@ -1,6 +1,1 @@
-mlflow[extras]==1.17.0
-
-# MLFlow's 
-psycopg2-binary==2.8.6
-pymysql==1.0.2
-mysqlclient==2.0.3
+mlflow[extras]==1.20.2

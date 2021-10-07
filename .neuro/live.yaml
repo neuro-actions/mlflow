@@ -9,7 +9,7 @@ volumes:
 
 jobs:
   mlflow_server:
-    action: gh:neuro-actions/mlflow@v1.17.0
+    action: gh:neuro-actions/mlflow@v1.20.2
     args:
       backend_store_uri: sqlite:///${{ volumes.mlflow_artifacts.mount }}/mlflow.db
       default_artifact_root: ${{ volumes.mlflow_artifacts.mount }}
