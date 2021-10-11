@@ -4,14 +4,6 @@ author: Neu.ro MLOps team
 descr: Integrate and run MLFlow server in your project.
 
 inputs:
-  backend_store_uri:
-    descr: |
-      URI to the storage, which should be used to dump experiments, their metrics, registered models, etc.
-      Examples: 
-        Postgress DB: postgresql://postgres:password@job-1231-123123-123.platform-jobs:5432
-        SQLite DB: sqlite:///some/path/mlflow.db - you cannot use storage: here, but could use disk:
-        regular file: /path/to/store - in this case "MLFlow registered models" will not work.
-      Docs: https://mlflow.org/docs/latest/tracking.html#backend-stores
   default_artifact_root:
     descr: |
       Place, where to store MLFlow artifacts (such as model dumps).
@@ -21,6 +13,16 @@ inputs:
         1. set this input equal to the `mount path` of needed volume,
         2. add its read-write reference to the `inputs.volumes` list
       Docs: https://mlflow.org/docs/latest/tracking.html#artifact-stores
+  backend_store_uri:
+    default: ""
+    descr: |
+      URI to the storage, which should be used to dump experiments, their metrics, registered models, etc.
+      Examples:
+        Empty string: in this case the model registry functionality will not work
+        Postgress DB: postgresql://postgres:password@job-1231-123123-123.platform-jobs:5432
+        SQLite DB: sqlite:///some/path/mlflow.db - you cannot use the platform storage if it's running in Azure, but could use disk
+        regular file: /path/to/store - in this case "MLFlow registered models" will not work.
+      Docs: https://mlflow.org/docs/latest/tracking.html#backend-stores
   volumes:
     default: "[]"
     descr: Additional volumes for the server job
@@ -55,17 +57,18 @@ inputs:
       Extra parameters for `mlflow server` command invocation.
 
 job:
-  image: neuromation/mlflow:v1.17.0
+  image: neuromation/mlflow:v1.20.2
   name: ${{ inputs.job_name }}
   preset: ${{ inputs.preset }}
   http_port: ${{ inputs.port }}
   http_auth: ${{ inputs.http_auth }}
   life_span: ${{ inputs.life_span }}
+  workdir: ${{ inputs.default_artifact_root }} # If not set, mlflow server will not grasp artifacts without backend_store_uri
   detach: True
   browse: True
   volumes: "${{ from_json(inputs.volumes) }}"
   env: "${{ from_json(inputs.envs) }}"
   cmd: |
     server --host 0.0.0.0 --port ${{ inputs.port }}
-        --backend-store-uri=${{ inputs.backend_store_uri }}
+        ${{ inputs.backend_store_uri and ("--backend-store-uri=" + inputs.backend_store_uri )}}
         --default-artifact-root=${{ inputs.default_artifact_root }} ${{ inputs.extra_params }}
