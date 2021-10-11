@@ -161,3 +161,13 @@ Check the full list of accepted parameters via `mlflow server --help`.
 args:
     extra_params: "--workers 2 --host example.com"
 ```
+
+# Known issues
+### `sqlite3.OperationalError: database is locked`
+This might happen under the following circumstances:
+1. the mlflow server parameter `--backend_store_uri` is not set (by default, SQLite is used) or set to use SQLite or a regular file
+2. the filesystem used to handle the file for `--backend_store_uri` does not suppoer the file Lock operation (observed with the Azure File NFS solution).
+
+To confirm whether you're running in Azure cloud hit `neuro admin get-clusters`.
+
+A work-around for this is to a platform `disk:` to host the SQLite data, or to use a remote DB, for instance, PostgreSQL.
