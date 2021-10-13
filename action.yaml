@@ -30,7 +30,7 @@ inputs:
     default: "{}"
     descr: Additional environment variables for the server job
   http_auth:
-    default: "False"
+    default: ""
     descr: |
       Whether to enable Neu.ro platform-based authentication or not.
       If disabled (by default) - your MLFlow server will not be protected by Neu.ro SSO.
