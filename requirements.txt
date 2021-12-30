@@ -1,6 +1,6 @@
 mlflow[extras,sqlserver,aliyun_oss]==1.20.2
 
 # MLFlow's dependencies, not listed in any requirements, neither in extras.
-psycopg2-binary==2.9.1
+psycopg2-binary==2.9.3
 pymysql==1.0.2
 mysqlclient==2.0.3
