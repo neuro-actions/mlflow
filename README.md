@@ -170,4 +170,4 @@ This might happen under the following circumstances:
 
 To confirm whether you're running in Azure cloud hit `neuro admin get-clusters`.
 
-A work-around for this is to use a platform `disk:` to host the SQLite data, or to use a remote DB, for instance, PostgreSQL.
+A work-around for this is to use a platform `disk:` to host the SQLite data, or to use a dedicated SQL DB, for instance, [PostgreSQL hosted on the platform](https://github.com/neuro-actions/postgres).
