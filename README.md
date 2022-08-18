@@ -58,7 +58,7 @@ In this case the `--backend_store_uri` MLFlow flag will be ommited and the defau
 * Postgres server as a job within the same project:
 ```yaml
 args:
-	backend_store_uri: postgresql://postgres:password@${{ inspect_job('postgres').internal_hostname_named }}:5432
+    backend_store_uri: postgresql://postgres:password@${{ inspect_job('postgres').internal_hostname_named }}:5432
 ```
 
 * SQLite persistent on a platform disk or storage.
@@ -101,7 +101,7 @@ List of environment variables added to the job. Empty by default.
 
 ```yaml
 args:
-	envs: "${{ to_json(
+    envs: "${{ to_json(
         {
           'ENV1': 'env_1_value',
           'ENV2': 'env_2_value'
@@ -131,7 +131,7 @@ A value specifying how long the MLFlow server job should be running. `"10d"` by 
 
 ```yaml
 args:
-	life_span: 1d2h3m
+    life_span: 1d2h3m
 ```
 
 ### `port`
@@ -153,7 +153,7 @@ Predictable subdomain name which replaces the job's ID in the full job URI. `""`
 
 ```yaml
 args:
-	job_name: "mlflow-server"
+    job_name: "mlflow-server"
 ```
 
 
