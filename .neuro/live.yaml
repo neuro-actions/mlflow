@@ -11,6 +11,6 @@ jobs:
   mlflow_server:
     action: gh:neuro-actions/mlflow@master
     args:
-      backend_store_uri: sqlite:///${{ volumes.mlflow_artifacts.mount }}/mlflow.db 
+      backend_store_uri: sqlite:////${{ volumes.mlflow_artifacts.mount }}/mlflow.db 
       artifacts_destination: ${{ volumes.mlflow_artifacts.mount }}
       volumes: "${{ to_json( [volumes.mlflow_artifacts.ref_rw] ) }}"

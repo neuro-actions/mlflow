@@ -1,7 +1,6 @@
 FROM continuumio/miniconda3:4.12.0
 
 ENV HOME="/root"
-WORKDIR ${HOME}
 
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
@@ -19,11 +18,11 @@ RUN apt-get update && \
         curl \
         && \
     apt-get clean && rm -rf /var/lib/apt/lists/* && \
+    cd $HOME && \
     git clone --depth=1 https://github.com/pyenv/pyenv.git .pyenv
 
 ENV PYENV_ROOT="${HOME}/.pyenv"
 ENV PATH="${PYENV_ROOT}/shims:${PYENV_ROOT}/bin:${PATH}"
-
 
 COPY requirements.txt /tmp/requirements.txt
 RUN pip install --progress-bar=off -U --no-cache-dir -r /tmp/requirements.txt && \
